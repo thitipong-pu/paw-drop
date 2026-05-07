@@ -1,4 +1,4 @@
-import logoUrl from '../img/logo.png';
+const logoUrl = '/logo.png';
 
 export function Navbar() {
   return (

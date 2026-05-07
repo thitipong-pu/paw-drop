@@ -1,11 +1,6 @@
 import { Place } from '../types';
 
-const badgeColors: Record<string, { bg: string; text: string }> = {
-  shelter:    { bg: '#FFF3ED', text: '#E8621A' },
-  clinic:     { bg: '#F0FDF4', text: '#2E7D32' },
-  foundation: { bg: '#FEFCE8', text: '#B45309' },
-  rescue:     { bg: '#FDF2F8', text: '#9D174D' },
-};
+
 
 interface PlaceCardProps {
   place: Place;

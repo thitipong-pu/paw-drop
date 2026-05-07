@@ -3,11 +3,12 @@ import { Place, Product } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+
 const badgeColors: Record<string, { bg: string; text: string }> = {
-  shelter:    { bg: '#F0F9FF', text: '#0388C4' },
-  clinic:     { bg: '#F0FDF4', text: '#2E7D32' },
+  shelter: { bg: '#F0F9FF', text: '#0388C4' },
+  clinic: { bg: '#F0FDF4', text: '#2E7D32' },
   foundation: { bg: '#F8FAFC', text: '#64748B' },
-  rescue:     { bg: '#FDF2F8', text: '#9D174D' },
+  rescue: { bg: '#FDF2F8', text: '#9D174D' },
 };
 
 interface PlaceModalProps {

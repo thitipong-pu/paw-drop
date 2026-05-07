@@ -1,5 +1,4 @@
 import { Button } from '@heroui/react';
-import logoUrl from '../img/logo.png';
 
 export function CTABanner() {
   const handleShare = async () => {

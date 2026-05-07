@@ -1,4 +1,3 @@
-import logoUrl from '../img/logo.png';
 
 export function Footer() {
   return (
@@ -6,7 +5,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
           <div className="flex items-center gap-3">
-            <img src={logoUrl} alt="Logo" className="w-10 h-10 rounded-lg shadow-sm" />
+            <img src={'/logo.png'} alt="Logo" className="w-10 h-10 rounded-lg shadow-sm" />
             <span className="font-bold text-xl" style={{ color: '#0388C4', fontFamily: 'Prompt, sans-serif' }}>
               น้องอิ่ม
             </span>
