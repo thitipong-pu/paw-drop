@@ -2,9 +2,9 @@
 @import "@heroui/styles";
 
 @theme {
-  --color-primary: #E8621A;
+  --color-primary: #0388C4;
   --color-primary-foreground: #ffffff;
-  --color-warning: #E8621A;
+  --color-warning: #0388C4;
 }
 
 *, *::before, *::after {
@@ -12,7 +12,16 @@
 }
 
 body {
-  background-color: #FFFBF7;
-  color: #3B1A0E;
+  background-color: #F8FAFC;
+  color: #1E293B;
   font-family: 'Sarabun', sans-serif;
+}
+
+/* Hide scrollbar for Chrome/Safari */
+*::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -1,6 +1,7 @@
 export interface Place {
   id: number;
   emoji: string;
+  imageUrl?: string;
   name: string;
   type: string;
   typeKey: 'shelter' | 'clinic' | 'foundation' | 'rescue';
@@ -9,6 +10,8 @@ export interface Place {
   hours: string;
   needs: string[];
   mapUrl: string;
+  facebookPage?: string;
+  facebookUrl?: string;
 }
 
 export interface Product {
@@ -17,6 +20,7 @@ export interface Product {
   name: string;
   brand: string;
   emoji: string;
+  imageUrl?: string;
   urgent: boolean;
   shopeeUrl: string;
 }

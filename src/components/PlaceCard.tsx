@@ -13,55 +13,65 @@ interface PlaceCardProps {
 }
 
 export function PlaceCard({ place, onClick }: PlaceCardProps) {
-  const badge = badgeColors[place.typeKey];
-
   return (
-    <button
-      onClick={() => onClick(place)}
-      className="text-left w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-1 bg-white"
-      style={{ border: '1px solid #FFE5D5' }}
+    <div
+      className="text-left w-full rounded-2xl overflow-hidden shadow-lg shadow-slate-200/50 transition-all duration-300 hover:-translate-y-2 bg-white flex flex-col border border-slate-100"
     >
-      {/* Emoji Banner */}
+      {/* Image / Emoji Banner */}
       <div
-        className="flex items-center justify-center text-5xl py-6"
-        style={{ background: 'linear-gradient(135deg, #FFF3ED, #FFE5D5)' }}
+        className="relative flex items-center justify-center text-5xl shrink-0"
+        style={{ 
+          background: place.imageUrl ? `url(${place.imageUrl}) center/cover no-repeat` : 'linear-gradient(135deg, #F1F5F9, #E2E8F0)',
+          height: 180 // increased height as per image
+        }}
       >
-        {place.emoji}
+        {!place.imageUrl && place.emoji}
+        
+        {/* Type Badge on Top Left */}
+        <div 
+          className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold text-white shadow-sm"
+          style={{ backgroundColor: '#0388C4', fontFamily: 'Prompt, sans-serif' }}
+        >
+          {place.type}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        {/* Type Badge */}
-        <span
-          className="inline-block text-xs font-semibold px-2 py-1 rounded-full mb-2"
-          style={{ backgroundColor: badge.bg, color: badge.text, fontFamily: 'Sarabun, sans-serif' }}
-        >
-          {place.type}
-        </span>
-
+      <div className="p-5 flex flex-col flex-1">
         {/* Name */}
         <h3
-          className="font-bold text-base mb-1 leading-snug"
-          style={{ color: '#3B1A0E', fontFamily: 'Prompt, sans-serif' }}
+          className="font-bold text-lg mb-3 leading-tight"
+          style={{ color: '#0F172A', fontFamily: 'Prompt, sans-serif' }}
         >
           {place.name}
         </h3>
 
         {/* Address truncated */}
-        <p
-          className="text-xs leading-relaxed"
-          style={{
-            color: '#8B6151',
-            fontFamily: 'Sarabun, sans-serif',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
+        <div className="flex gap-2 mb-6">
+          <svg className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#0388C4' }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+          <p
+            className="text-xs leading-relaxed text-slate-500 font-medium"
+            style={{
+              fontFamily: 'Sarabun, sans-serif',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
+            {place.addr}
+          </p>
+        </div>
+
+        {/* Button */}
+        <button
+          onClick={() => onClick(place)}
+          className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all hover:brightness-110 active:scale-95 mt-auto shadow-md"
+          style={{ backgroundColor: '#0388C4', fontFamily: 'Prompt, sans-serif' }}
         >
-          📍 {place.addr}
-        </p>
+          รายละเอียดและช่องทางบริจาค
+        </button>
       </div>
-    </button>
+    </div>
   );
 }

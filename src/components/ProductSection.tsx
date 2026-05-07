@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { products } from '../data/products';
+import { useState, useEffect } from 'react';
+import { products as initialProducts } from '../data/products';
 import { Product } from '../types';
 
 type Category = 'all' | 'dog' | 'cat' | 'other' | 'urgent';
@@ -12,44 +12,61 @@ const tabs: { key: Category; label: string }[] = [
   { key: 'urgent', label: '🔴 ด่วน!' },
 ];
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function ProductCard({ product }: { product: Product }) {
   return (
     <button
-      onClick={() => window.open(product.shopeeUrl, '_blank')}
+      onClick={() => {
+        window.open(product.shopeeUrl, '_blank');
+
+        // Track Item CLICK
+        fetch(`${API_URL}/tracking/event`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            target_id: product.id.toString(),
+            target_type: 'ITEM',
+            event_type: 'CLICK'
+          })
+        }).catch(err => console.error("Error tracking click:", err));
+      }}
       style={{
         textAlign: 'left',
         width: '100%',
         borderRadius: 16,
         overflow: 'hidden',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-        border: '1px solid #FFE5D5',
+        boxShadow: '0 4px 12px rgba(15, 23, 42, 0.05)',
+        border: '1px solid #F1F5F9',
         background: 'white',
         cursor: 'pointer',
-        transition: 'box-shadow 0.2s, transform 0.2s',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         fontFamily: 'Sarabun, sans-serif',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0 8px 24px rgba(232,98,26,0.15)';
-        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 12px 24px rgba(3, 136, 196, 0.15)';
+        e.currentTarget.style.transform = 'translateY(-6px)';
+        e.currentTarget.style.borderColor = '#0388C420';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(15, 23, 42, 0.05)';
         e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = '#F1F5F9';
       }}
     >
       {/* Icon banner */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #FFF3ED, #FFE5D5)',
+          background: product.imageUrl ? `url(${product.imageUrl}) center/cover no-repeat` : 'linear-gradient(135deg, #FFF3ED, #FFE5D5)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: 36,
-          padding: '20px 0',
+          height: 120, // fixed height for banner
           position: 'relative',
         }}
       >
-        {product.emoji}
+        {!product.imageUrl && product.emoji}
         {product.urgent && (
           <span
             style={{
@@ -91,16 +108,18 @@ function ProductCard({ product }: { product: Product }) {
         <p style={{ color: '#8B6151', fontSize: 11, marginBottom: 10 }}>{product.brand}</p>
         <div
           style={{
-            background: '#EE4D2D',
+            background: '#0388C4',
             color: 'white',
             textAlign: 'center',
-            padding: '7px',
-            borderRadius: 10,
+            padding: '10px',
+            borderRadius: 12,
             fontSize: 12,
             fontWeight: 700,
+            fontFamily: 'Prompt, sans-serif',
+            boxShadow: '0 4px 12px rgba(3, 136, 196, 0.2)',
           }}
         >
-          🛍️ ซื้อใน Shopee
+          สั่งซื้อเลย
         </div>
       </div>
     </button>
@@ -109,28 +128,50 @@ function ProductCard({ product }: { product: Product }) {
 
 export function ProductSection() {
   const [activeTab, setActiveTab] = useState<Category>('all');
+  const [productsData, setProductsData] = useState<Product[]>(initialProducts);
+
+  useEffect(() => {
+    fetch(`${API_URL}/public/items`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.data && data.data.length > 0) {
+          const mappedItems: Product[] = data.data.map((item: any) => ({
+            id: item.id,
+            cat: item.animal_types && item.animal_types.includes('dog') ? 'dog' : (item.animal_types?.includes('cat') ? 'cat' : 'other'),
+            name: item.name,
+            brand: '🐾 สำหรับสัตว์เลี้ยง',
+            emoji: item.image_url ? '📦' : '🍖',
+            imageUrl: item.image_url || undefined,
+            urgent: item.tags?.includes('ด่วน') || false,
+            shopeeUrl: item.product_url || '#'
+          }));
+          setProductsData(mappedItems);
+        }
+      })
+      .catch(err => console.error("Error fetching items:", err));
+  }, []);
 
   const filtered: Product[] =
     activeTab === 'all'
-      ? products
+      ? productsData
       : activeTab === 'urgent'
-      ? products.filter((p) => p.urgent)
-      : products.filter((p) => p.cat === activeTab);
+        ? productsData.filter((p) => p.urgent)
+        : productsData.filter((p) => p.cat === activeTab);
 
   return (
-    <section style={{ background: '#FFFBF7', padding: '48px 16px' }}>
-      <div style={{ maxWidth: 960, margin: '0 auto' }}>
+    <section style={{ background: '#F8FAFC', padding: '80px 16px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <h2
           style={{
-            color: '#E8621A',
+            color: '#0388C4',
             fontFamily: 'Prompt, sans-serif',
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: 700,
             textAlign: 'center',
-            marginBottom: 24,
+            marginBottom: 32,
           }}
         >
-          🛍️ สินค้าที่ต้องการบริจาค
+          🛍️ สิ่งของที่เปิดรับบริจาค
         </h2>
 
         {/* Custom Tabs */}
@@ -148,16 +189,17 @@ export function ProductSection() {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               style={{
-                padding: '8px 16px',
+                padding: '10px 24px',
                 borderRadius: 999,
-                border: activeTab === tab.key ? '2px solid #E8621A' : '2px solid #FFD8C0',
-                background: activeTab === tab.key ? '#E8621A' : 'white',
-                color: activeTab === tab.key ? 'white' : '#8B6151',
-                fontFamily: 'Sarabun, sans-serif',
+                border: activeTab === tab.key ? '2px solid #0388C4' : '2px solid #E2E8F0',
+                background: activeTab === tab.key ? '#0388C4' : 'white',
+                color: activeTab === tab.key ? 'white' : '#64748B',
+                fontFamily: 'Prompt, sans-serif',
                 fontSize: 14,
-                fontWeight: activeTab === tab.key ? 700 : 400,
+                fontWeight: activeTab === tab.key ? 700 : 500,
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s',
+                boxShadow: activeTab === tab.key ? '0 8px 16px rgba(3, 136, 196, 0.2)' : 'none',
               }}
             >
               {tab.label}
@@ -186,7 +228,7 @@ export function ProductSection() {
                 fontFamily: 'Sarabun, sans-serif',
               }}
             >
-              ไม่พบสินค้าในหมวดนี้
+              ไม่พบของบริจากในหมวดนี้
             </div>
           )}
         </div>
